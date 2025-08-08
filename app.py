@@ -1,0 +1,44 @@
+from openai import OpenAI
+from dotenv import load_dotenv
+from openai import AzureOpenAI
+import os
+
+# Load environment variables from .env file
+load_dotenv()
+OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+
+endpoint = "https://it212-me1y3ikc-eastus2.cognitiveservices.azure.com/"
+model_name = "gpt-35-turbo"
+deployment = "gpt-35-turbo"
+
+
+
+client = AzureOpenAI(
+    api_version="2024-12-01-preview",
+    azure_endpoint="https://it212-me1y3ikc-eastus2.cognitiveservices.azure.com/",
+    api_key=OPENAI_API_KEY,
+)
+
+while True:
+    
+    question = input("user: ")
+    if question.lower() == "bye":
+        print("Exiting the chatbot. Goodbye!")
+        break
+    
+    response = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": question,
+            }
+        ],
+        max_tokens=50,
+        temperature=0.3,
+        n=1,
+        top_p=1.0,
+        model=deployment
+    )
+
+    for choice in response.choices:
+        print(f"AI: {choice.message.content}")
