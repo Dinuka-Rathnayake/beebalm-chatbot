@@ -1,7 +1,10 @@
+from flask import Flask, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 from openai import AzureOpenAI
 import os
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,6 +24,8 @@ client = AzureOpenAI(
 
 while True:
     
+    # get user input
+    print("Ask a question about Beebalm Banquet Hall (type 'bye' to exit):")
     question = input("user: ")
     if question.lower() == "bye":
         print("Exiting the chatbot. Goodbye!")
@@ -42,3 +47,23 @@ while True:
 
     for choice in response.choices:
         print(f"AI: {choice.message.content}")
+
+app = Flask(__name__)
+
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.json
+    user_question = data.get('question', '')
+    response = client.chat.completions.create(
+        messages=[{"role": "system", "content": user_question}],
+        max_tokens=50,
+        temperature=0.3,
+        n=1,
+        top_p=1.0,
+        model=deployment
+    )
+    answer = response.choices[0].message.content
+    return jsonify({'answer': answer})
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8000)

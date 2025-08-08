@@ -1,2 +1,7 @@
+flask
 openai
 python-dotenv
+aiohttp
+botbuilder-core
+botbuilder-integration-aiohttp
+botbuilder-schema
