@@ -3,7 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from openai import AzureOpenAI
 import os
-
+import uuid
 
 app = Flask(__name__)
 # Load environment variables from .env file
@@ -67,11 +67,17 @@ def messages():
         )
         answer = response.choices[0].message.content
 
-        # Bot Framework expects a reply activity
-        return jsonify({
+        # Build a Bot Framework-compatible reply
+        reply = {
             "type": "message",
-            "text": answer
-        })
+            "text": answer,
+            "from": activity.get("recipient", {"id": "bot"}),
+            "recipient": activity.get("from", {"id": "user"}),
+            "replyToId": activity.get("id"),
+            "conversation": activity.get("conversation"),
+            "id": str(uuid.uuid4())
+        }
+        return jsonify(reply)
     # Respond to other activity types with 200 OK and no body
     return '', 200
 
