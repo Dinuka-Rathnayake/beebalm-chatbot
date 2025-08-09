@@ -1,8 +1,11 @@
+from flask import Flask, request, jsonify
 from openai import OpenAI
 from dotenv import load_dotenv
 from openai import AzureOpenAI
+from dotenv import load_dotenv
 import os
 
+app = Flask(__name__)
 # Load environment variables from .env file
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -42,3 +45,30 @@ while True:
 
     for choice in response.choices:
         print(f"AI: {choice.message.content}")
+
+
+# routes
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.json
+    question = data.get('question')
+
+    if not question:
+        return jsonify({"error": "No question provided"}), 400
+
+    response = client.chat.completions.create(
+        messages=[
+            {
+                "role": "system",
+                "content": question,
+            }
+        ],
+        max_tokens=50,
+        temperature=0.3,
+        n=1,
+        top_p=1.0,
+        model=deployment
+    )
+
+    answer = response.choices[0].message.content
+    return jsonify({"answer": answer})
