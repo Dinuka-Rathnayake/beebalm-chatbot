@@ -50,20 +50,31 @@ client = AzureOpenAI(
 
 
 
-@app.route('/api/chat', methods=['POST'])
-def chat():
-    data = request.json
-    user_question = data.get('question', '')
-    response = client.chat.completions.create(
-        messages=[{"role": "system", "content": user_question}],
-        max_tokens=50,
-        temperature=0.3,
-        n=1,
-        top_p=1.0,
-        model=deployment
-    )
-    answer = response.choices[0].message.content
-    return jsonify({'answer': answer})
+@app.route('/api/messages', methods=['POST'])
+def messages():
+    activity = request.json
+    # Only respond to message activities
+    if activity.get("type") == "message":
+        user_text = activity.get("text", "")
+        # Call OpenAI
+        response = client.chat.completions.create(
+            messages=[{"role": "system", "content": user_text}],
+            max_tokens=50,
+            temperature=0.3,
+            n=1,
+            top_p=1.0,
+            model=deployment
+        )
+        answer = response.choices[0].message.content
+
+        # Bot Framework expects a reply activity
+        return jsonify({
+            "type": "message",
+            "text": answer
+        })
+    # Respond to other activity types with 200 OK and no body
+    return '', 200
+
 
 @app.route('/')
 def home():
