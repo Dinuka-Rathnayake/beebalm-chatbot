@@ -57,16 +57,21 @@ def messages():
     if activity.get("type") == "message":
         user_text = activity.get("text", "")
         # Call OpenAI
-        response = client.chat.completions.create(
-            messages=[{"role": "system", "content": user_text}],
-            max_tokens=50,
-            temperature=0.3,
-            n=1,
-            top_p=1.0,
-            model=deployment
-        )
-        answer = response.choices[0].message.content
-
+        print("User text:", user_text)
+        try:
+            response = client.chat.completions.create(
+                messages=[{"role": "system", "content": user_text}],
+                max_tokens=50,
+                temperature=0.3,
+                n=1,
+                top_p=1.0,
+                model=deployment
+            )
+            answer = response.choices[0].message.content
+            print("AI response:", answer)
+        except Exception as e:
+            print("Error calling OpenAI:", e)
+            answer = "Sorry, I couldn't process your request at the moment."
         # Build a Bot Framework-compatible reply
         reply = {
             "type": "message",
@@ -77,8 +82,10 @@ def messages():
             "conversation": activity.get("conversation"),
             "id": str(uuid.uuid4())
         }
+        print("Replying with:", reply)
         return jsonify(reply)
     # Respond to other activity types with 200 OK and no body
+    print("Received non-message activity")
     return '', 200
 
 
