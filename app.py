@@ -22,31 +22,31 @@ client = AzureOpenAI(
     api_key=OPENAI_API_KEY,
 )
 
-while True:
+# while True:
     
-    # get user input
-    print("Ask a question about Beebalm Banquet Hall (type 'bye' to exit):")
-    question = input("user: ")
-    if question.lower() == "bye":
-        print("Exiting the chatbot. Goodbye!")
-        break
+#     # get user input
+#     print("Ask a question about Beebalm Banquet Hall (type 'bye' to exit):")
+#     question = input("user: ")
+#     if question.lower() == "bye":
+#         print("Exiting the chatbot. Goodbye!")
+#         break
     
-    response = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": question,
-            }
-        ],
-        max_tokens=50,
-        temperature=0.3,
-        n=1,
-        top_p=1.0,
-        model=deployment
-    )
+#     response = client.chat.completions.create(
+#         messages=[
+#             {
+#                 "role": "system",
+#                 "content": question,
+#             }
+#         ],
+#         max_tokens=50,
+#         temperature=0.3,
+#         n=1,
+#         top_p=1.0,
+#         model=deployment
+#     )
 
-    for choice in response.choices:
-        print(f"AI: {choice.message.content}")
+#     for choice in response.choices:
+#         print(f"AI: {choice.message.content}")
 
 
 
@@ -65,5 +65,10 @@ def chat():
     answer = response.choices[0].message.content
     return jsonify({'answer': answer})
 
+@app.route('/')
+def home():
+    return "Welcome to the Beebalm Banquet Hall Chatbot!"
+
+#for local testing
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000)
