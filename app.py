@@ -5,7 +5,7 @@ from openai import AzureOpenAI
 import os
 
 
-
+app = Flask(__name__)
 # Load environment variables from .env file
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -48,7 +48,7 @@ while True:
     for choice in response.choices:
         print(f"AI: {choice.message.content}")
 
-app = Flask(__name__)
+
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
