@@ -1,2 +1,6 @@
 .env
 env/
+my_env/
+python12env/
+__pycache__/
+langenv/
