@@ -9,9 +9,7 @@ from flask_cors import CORS
 
 # crew ai imports
 from crewai import Agent, Crew, LLM, Task
-from crewai_tools import WebsiteSearchTool
 from crewai_tools import PDFSearchTool
-from crewai_tools import ScrapeWebsiteTool
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -29,8 +27,8 @@ deployment = "gpt-35-turbo"
 
 client = AzureOpenAI(
     api_version="2024-12-01-preview",
-    azure_endpoint="https://it212-me1y3ikc-eastus2.cognitiveservices.azure.com/",
-    api_key=OPENAI_API_KEY,
+    azure_endpoint= endpoint,
+    api_key=OPENAI_API_KEY
 )
 
 # crew ai setup
@@ -39,38 +37,66 @@ llm = LLM(
     api_key=OPENAI_API_KEY,
     api_base=endpoint,
     deployment_id=deployment
+    
 )
 
-# Use ScrapeWebsiteTool instead (simpler, no embedding required)
-scrape_tool = ScrapeWebsiteTool(website_url="https://www.beebalm.lk/")
+# import ragtool
+#pdf_rag_tool = PDFSearchTool(pdf = "beebalmlk.pdf")
 
-# research agent
-researcher = Agent(
-    role="Research Agent",
-    goal="Provide accurate consistent answers to question by reading website : {query}.",
-    backstory="you are skilled at finding key insights quickly and accurately from a website.",
-    tools=[scrape_tool],
-    verbose=True,
-    llm=llm    
-)
+# # research agent
+# researcher = Agent(
+#     role="Research Agent",
+#     goal="extract relevant information from the provided PDF document.",
+#     backstory="you are skilled at finding key insights quickly and accurately from a PDF document.",
+#     tools=[pdf_rag_tool],
+# )
+
+# # writer agent
+# writer = Agent(
+#     role="Content generation Assistant",
+#     goal="create clear, engaging well structured written related to   query: {query}.",
+#     backstory="You are passionate about tuning ideas and facts into compelling easy to read.",
+#     llm=llm,
+# )
 
 # research task
-research_task = Task(
-    description=""""Answer questions about Beebalm Banquet Hall.
-    
-    Query: {query}
-    
-    Provide as much details as possible, even if partial.""",
-    expected_output="A clear and concise answer to the user's question with support from the provided website.",
-    agent=researcher,
+# research_task = Task(
+#     name="Researching Information",
+#     description="Extract relevant information from the provided PDF document.",
+#     expected_output="A summary of the key points related to the query.",
+#     agent=researcher,
+# )
+
+# # writing task
+# writing_task = Task(
+#     name="Writing Content",
+#     description="Generate clear, engaging content based on the research findings.",
+#     expected_output="A polished, three section report in markdown format with an .",
+#     agent=writer,
+#     output_file="report.md",
+# )
+
+qa_agent = Agent(
+    role="Question Answering Agent",
+    goal="Provide accurate consistent answers to question : {query}",
+    backstory="You serve as a relible guide to help users navigage infomation overload and find the answers they need.",
+    description="An agent that answers questions about Beebalm Banquet Hall.",
+    llm=llm,
+    tools=[],
+)
+
+qa_task = Task(
+    name="Answering Questions",
+    description="Answer questions about Beebalm Banquet Hall.",
+    expected_output="A clear and concise answer to the user's question with support from the provided PDF document.",
+    agent=qa_agent
 )
 
 # crew
 crew = Crew(
-    agents=[researcher],
-    tasks=[research_task],
+    agents=[qa_agent],
+    tasks=[qa_task],
     verbose=True,
-    memory=False,  # Disable memory for this crew
 )
 
 result = crew.kickoff(inputs={
@@ -78,6 +104,34 @@ result = crew.kickoff(inputs={
     
 })
 print("Crew result:", result)
+
+# while True:
+    
+#     # get user input
+#     print("Ask a question about Beebalm Banquet Hall (type 'bye' to exit):")
+#     question = input("user: ")
+#     if question.lower() == "bye":
+#         print("Exiting the chatbot. Goodbye!")
+#         break
+    
+#     response = client.chat.completions.create(
+#         messages=[
+#             {
+#                 "role": "system",
+#                 "content": question,
+#             }
+#         ],
+#         max_tokens=50,
+#         temperature=0.3,
+#         n=1,
+#         top_p=1.0,
+#         model=deployment
+#     )
+
+#     for choice in response.choices:
+#         print(f"AI: {choice.message.content}")
+
+
 
 # @app.route('/api/messages', methods=['POST'])
 # def messages():
