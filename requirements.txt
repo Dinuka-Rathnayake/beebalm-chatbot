@@ -5,3 +5,7 @@ aiohttp
 botbuilder-core
 botbuilder-integration-aiohttp
 botbuilder-schema
+
+flask-cors
+crewai
+crewai-tools
