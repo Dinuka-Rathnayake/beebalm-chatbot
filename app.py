@@ -4,7 +4,8 @@ from openai import AzureOpenAI
 import os
 import uuid
 from flask_cors import CORS
-
+# Disable ChromaDB before importing CrewAI
+os.environ["CHROMA_DB_IMPL"] = "duckdb+parquet"
 
 # crew ai imports
 from crewai import Agent, Crew, LLM, Task
