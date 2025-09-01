@@ -1,8 +1,8 @@
-flask
-openai
-python-dotenv
-crewai
-crewai-tools
-flask-cors
-
+flask==3.0.0
+openai==1.54.3
+python-dotenv==1.0.0
+crewai[tools]==0.63.6
+flask-cors==4.0.0
+requests==2.31.0
+pydantic==2.5.0
 

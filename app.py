@@ -49,7 +49,7 @@ researcher = Agent(
     goal="Provide accurate consistent answers to question by reading website : {query}.",
     backstory="you are skilled at finding key insights quickly and accurately from a website.",
     tools=[scrape_tool],
-    verbose=True,
+    verbose=False,
     llm=llm    
 )
 
@@ -68,7 +68,7 @@ research_task = Task(
 crew = Crew(
     agents=[researcher],
     tasks=[research_task],
-    verbose=True,
+    verbose=False,
     memory=False,  # Disable memory for this crew
 )
 #for testing locally
