@@ -1,6 +1,8 @@
+flask
+openai
+python-dotenv
 crewai
 crewai-tools
-openai
-flask
 flask-cors
-python-dotenv
+
+
