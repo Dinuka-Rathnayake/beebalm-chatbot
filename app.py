@@ -12,7 +12,7 @@ from crewai import Agent, Crew, LLM, Task
 from crewai_tools import ScrapeWebsiteTool
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, origins=["https://beebalm.lk"])  # Enable CORS for all routes
 
 # Load environment variables from .env file
 load_dotenv()

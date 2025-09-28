@@ -13,7 +13,10 @@ COPY .env .env
 # install dependencies 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY app.py .
+COPY .env .
+COPY requirements.txt .
+
 
 EXPOSE 8001
 
