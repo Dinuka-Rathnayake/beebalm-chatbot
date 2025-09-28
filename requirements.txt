@@ -1,8 +1,8 @@
 flask
+flask-cors
 openai
 python-dotenv
+crewai
 crewai[tools]
-flask-cors
 setuptools
 wheel
-crewai

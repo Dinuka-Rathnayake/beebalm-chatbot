@@ -11,8 +11,7 @@ COPY requirements.txt requirements.txt
 COPY .env .env
 
 # install dependencies 
-# RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install 'crewai[tools]'
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

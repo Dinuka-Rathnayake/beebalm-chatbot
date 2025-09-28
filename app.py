@@ -9,8 +9,6 @@ os.environ["CHROMA_DB_IMPL"] = "duckdb+parquet"
 
 # crew ai imports
 from crewai import Agent, Crew, LLM, Task
-from crewai_tools import WebsiteSearchTool
-from crewai_tools import PDFSearchTool
 from crewai_tools import ScrapeWebsiteTool
 
 app = Flask(__name__)
