@@ -1,8 +1,8 @@
 flask
 openai
 python-dotenv
-crewai
-crewai-tools
+crewai[tools]
 flask-cors
 setuptools
 wheel
+crewai
